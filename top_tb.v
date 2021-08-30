@@ -1,10 +1,11 @@
 `timescale 1ns / 1ps
 
-module top(
-    input ck_rst, // active low
-    input CLK100MHZ,
-    output ck_io41
-    );
+module top_tb();
+    reg ck_rst, CLK100MHZ;
+    initial ck_rst = 0;
+    initial #18 ck_rst = 1;
+    initial CLK100MHZ = 0;
+    always #5 CLK100MHZ = ~CLK100MHZ;
 
     wire sys_rst, sys_rst_n;
     assign sys_rst = ~sys_rst_n;
@@ -29,8 +30,6 @@ module top(
 
     always @(posedge carr_clk)
        pwm_out <= (pwm_counter < sample);
-
-    assign ck_io41 = (pwm_out) ? carr_clk : 0;
 
     wire clk_cpfsk_data_in, cpfsk_rst, fsk_data;
     xorshift_32 xorshift_32_inst(.clk(clk_cpfsk_data_in), .rst(cpfsk_rst), .out(fsk_data));
